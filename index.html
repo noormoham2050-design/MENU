@@ -194,7 +194,31 @@ const initialProducts=[
 {id:6,name:"تشيز كيك",category:"حلويات",price:5000,description:"تشيز كيك بطبقة كريمية",image:"https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700"}
 ];
 
-let products=JSON.parse(localStorage.getItem("menu_products")||"null")||initialProducts;
+let products=initialProducts;
+
+async function loadProducts(){
+  const {data,error}=await supabaseClient
+    .from("products")
+    .select("id,name,description,price,image_url,categories(name)")
+    .eq("restaurant_id",RESTAURANT_ID)
+    .eq("is_available",true);
+
+  if(error){
+    console.error("Products error:",error);
+    return;
+  }
+
+  products=data.map(p=>({
+    id:p.id,
+    name:p.name,
+    description:p.description,
+    price:Number(p.price),
+    image:p.image_url,
+    category:p.categories?.name || "أخرى"
+  }));
+
+  render();
+}
 let cart=JSON.parse(localStorage.getItem("menu_cart")||"{}");
 let orders=JSON.parse(localStorage.getItem("menu_orders")||"[]");
 let settings=JSON.parse(localStorage.getItem("menu_settings")||"{}");
@@ -327,6 +351,7 @@ function saveSettings(){
 }
 document.getElementById("year")?.textContent;
 render();
+loadProducts();
 </script>
 </body>
 </html>
