@@ -170,6 +170,22 @@ const supabaseClient = window.supabase.createClient(
 
 const RESTAURANT_ID = "eb4ff5b4-2203-47f9-a813-772cdc7e1056";
 
+async function testSupabaseConnection() {
+  const { data, error } = await supabaseClient
+    .from("restaurants")
+    .select("id, name")
+    .eq("id", RESTAURANT_ID)
+    .single();
+
+  if (error) {
+    alert("فشل الاتصال: " + error.message);
+  } else {
+    alert("تم الاتصال بنجاح! المطعم: " + data.name);
+  }
+}
+
+testSupabaseConnection();
+
 const initialProducts=[
 {id:1,name:"برغر كلاسيك",category:"برغر",price:8500,description:"لحم مشوي وجبن وصلصة خاصة",image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=700"},
 {id:2,name:"بيتزا مارغريتا",category:"بيتزا",price:12000,description:"طماطم وموزاريلا وريحان",image:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=700"},
