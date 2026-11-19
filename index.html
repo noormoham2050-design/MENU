@@ -1,42 +1,303 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MENU Restaurant</title>
+<title>MENU - Restaurant</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f7f4ef;color:#211d18;font-family:Tahoma,Arial}
-header{background:#171512;color:#dfc18e;padding:20px;display:flex;justify-content:space-between;align-items:center}
-.logo{font: bold 30px Georgia;letter-spacing:4px}
-button{cursor:pointer;border:0;padding:12px;border-radius:7px}
-.gold{background:#b88a4a;color:#171512;font-weight:bold}
-.hero{padding:85px 25px;color:white;background:linear-gradient(#17151299,#171512bb),url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200') center/cover}
-.hero h1{font:55px Georgia;color:#dfc18e}
-.hero p{line-height:2}
-h2{text-align:center;font:34px Georgia;margin-top:45px}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;padding:25px;max-width:1100px;margin:auto}
-.item{background:white;border:1px solid #e9e1d5;border-radius:12px;overflow:hidden}
-.item img{width:100%;height:180px;object-fit:cover}
-.info{padding:15px}
-.price{color:#b88a4a;font-weight:bold}
-.add{width:100%;background:#171512;color:white;margin-top:10px}
-.add:hover{background:#b88a4a;color:#171512}
-footer{background:#171512;color:#dfc18e;text-align:center;padding:30px}
-.cart{position:fixed;bottom:18px;left:18px;background:#b88a4a;color:#171512;font-weight:bold}
-#panel{display:none;position:fixed;inset:0;background:#0009;overflow:auto;padding:15px}
-.box{background:white;padding:22px;border-radius:12px;max-width:500px;margin:30px auto}
-input,select{width:100%;padding:12px;margin:7px 0;border:1px solid #ddd;border-radius:6px}
-.close{float:left;background:#eee}
-.row{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #ddd}
+body{margin:0;background:#f7f5f0;color:#222;font-family:Tahoma,Arial}
+header{background:#171717;color:white;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{font-size:30px;color:#d6b477;letter-spacing:3px;font-weight:bold}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 15px;font-weight:bold}
+.gold{background:#b58b48;color:white}
+.dark{background:#333;color:white}
+.hero{padding:65px 7%;color:white;background:linear-gradient(90deg,#000c,#0005),url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1400') center/cover}
+.hero h1{font-size:38px;margin:0 0 12px}
+.hero p{line-height:1.8}
+main{max-width:1100px;margin:auto;padding:25px 16px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
+.chip{background:white;border:1px solid #ddd;border-radius:25px}
+.chip.active{background:#222;color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.product{background:white;border:1px solid #eee;border-radius:15px;overflow:hidden}
+.product img{width:100%;height:165px;object-fit:cover}
+.pbody{padding:14px}
+.phead{display:flex;justify-content:space-between;gap:8px}
+.phead h3{margin:0;font-size:17px}
+.price{color:#a77d3d;font-weight:bold;white-space:nowrap}
+.desc{color:#777;font-size:13px;min-height:35px;line-height:1.6}
+.add{background:#222;color:white;width:100%}
+.cartbar{position:fixed;bottom:12px;left:12px;right:12px;max-width:480px;margin:auto;background:#171717;color:white;padding:13px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:10;align-items:center;justify-content:center;padding:12px}
+.modal{background:white;border-radius:15px;padding:20px;width:min(600px,100%);max-height:90vh;overflow:auto}
+.modalhead{display:flex;justify-content:space-between;align-items:center}
+.close{background:#eee}
+.field{margin:12px 0}
+.field label{display:block;font-size:13px;margin-bottom:6px;color:#555}
+.field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid #ddd;border-radius:8px;font:inherit}
+.cartrow,.adminrow{padding:12px 0;border-bottom:1px solid #eee}
+.cartrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.qty{display:flex;gap:8px;align-items:center}
+.qty button{background:#eee;padding:6px 10px}
+.total{display:flex;justify-content:space-between;font-weight:bold;padding:15px 0;font-size:18px}
+.full{width:100%}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:15px 0}
+.tab{background:#eee}
+.tab.active{background:#222;color:white}
+.muted{font-size:12px;color:#777;line-height:1.7}
+footer{text-align:center;color:#888;padding:35px 15px 90px}
+@media(max-width:500px){.hero h1{font-size:28px}.logo{font-size:23px}header{padding:12px}}
 </style>
 </head>
 <body>
+
 <header>
-<div class="logo">MENU.</div>
-<button class="gold" onclick="showCart()">🛒 السلة (<span id="count">0</span>)</button>
+  <div>
+    <div class="logo">MENU</div>
+    <small>RESTAURANT EXPERIENCE</small>
+  </div>
+  <div>
+    <button class="dark" onclick="openAdmin()">الإدارة</button>
+    <button class="gold" onclick="openCart()">السلة (<span id="count">0</span>)</button>
+  </div>
 </header>
 
 <section class="hero">
-<small> A TASTE OF ELEGANCE </small>
-<h1>لحظات تُذاق</h1>
+  <h1 id="heroTitle">نكهات تستحق التجربة</h1>
+  <p id="heroText">اكتشف قائمتنا المختارة من الأطباق الطازجة والمحضّرة بعناية.</p>
+</section>
+
+<main>
+  <h2>قائمة الطعام</h2>
+  <p class="muted">اختَر طبقك المفضل وأضفه إلى السلة.</p>
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="products"></div>
+</main>
+
+<div class="cartbar">
+  <span>🛒 <b id="barCount">0</b> منتج | <b id="barTotal">0</b> د.ع</span>
+  <button class="gold" onclick="openCart()">إتمام الطلب</button>
+</div>
+
+<footer>© MENU Restaurant</footer>
+
+<!-- CART -->
+<div class="overlay" id="cartBox">
+<div class="modal">
+  <div class="modalhead">
+    <h2>سلة المشتريات</h2>
+    <button class="close" onclick="closeBox('cartBox')">✕</button>
+  </div>
+  <div id="cartItems"></div>
+  <div class="total"><span>المجموع</span><span id="total">0 د.ع</span></div>
+
+  <h3>معلومات الطلب</h3>
+  <div class="field"><label>الاسم</label><input id="customerName"></div>
+  <div class="field"><label>رقم الهاتف</label><input id="customerPhone"></div>
+  <div class="field"><label>العنوان</label><textarea id="customerAddress"></textarea></div>
+  <div class="field">
+    <label>طريقة الدفع</label>
+    <select id="payment">
+      <option>نقداً عند الاستلام</option>
+      <option>دفع إلكتروني - غير مفعّل حالياً</option>
+    </select>
+  </div>
+  <div class="field"><label>ملاحظات</label><textarea id="notes"></textarea></div>
+  <button class="gold full" onclick="sendOrder()">إرسال الطلب</button>
+</div>
+</div>
+
+<!-- ADMIN -->
+<div class="overlay" id="adminBox">
+<div class="modal">
+  <div class="modalhead">
+    <h2>لوحة الإدارة</h2>
+    <button class="close" onclick="closeBox('adminBox')">✕</button>
+  </div>
+
+  <div id="login">
+    <p class="muted">رمز الدخول التجريبي: 1234</p>
+    <div class="field"><label>رمز الإدارة</label><input id="pin" type="password"></div>
+    <button class="gold" onclick="login()">دخول</button>
+  </div>
+
+  <div id="dashboard" style="display:none">
+    <p class="muted">لوحة تجريبية: البيانات محفوظة على هذا المتصفح فقط، وليست مشتركة بين الأجهزة.</p>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('orders',this)">الطلبات</button>
+      <button class="tab" onclick="showTab('manage',this)">المنتجات</button>
+      <button class="tab" onclick="showTab('settings',this)">الإعدادات</button>
+    </div>
+
+    <div id="orders"></div>
+
+    <div id="manage" style="display:none">
+      <h3>إضافة منتج</h3>
+      <div class="field"><label>اسم المنتج</label><input id="newName"></div>
+      <div class="field"><label>القسم</label><input id="newCategory" placeholder="مثلاً: برغر"></div>
+      <div class="field"><label>السعر بالدينار</label><input id="newPrice" type="number"></div>
+      <div class="field"><label>رابط الصورة</label><input id="newImage"></div>
+      <div class="field"><label>الوصف</label><input id="newDescription"></div>
+      <button class="gold" onclick="addProduct()">إضافة المنتج</button>
+      <div id="productManagement"></div>
+    </div>
+
+    <div id="settings" style="display:none">
+      <h3>إعدادات المطعم</h3>
+      <div class="field"><label>عنوان الصفحة</label><input id="editTitle"></div>
+      <div class="field"><label>الوصف</label><textarea id="editText"></textarea></div>
+      <button class="gold" onclick="saveSettings()">حفظ</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const initialProducts=[
+{id:1,name:"برغر كلاسيك",category:"برغر",price:8500,description:"لحم مشوي وجبن وصلصة خاصة",image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=700"},
+{id:2,name:"بيتزا مارغريتا",category:"بيتزا",price:12000,description:"طماطم وموزاريلا وريحان",image:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=700"},
+{id:3,name:"باستا ألفريدو",category:"باستا",price:11000,description:"باستا كريمية مع الدجاج",image:"https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=700"},
+{id:4,name:"سلطة سيزر",category:"مقبلات",price:6500,description:"خس طازج وخبز محمص",image:"https://images.unsplash.com/photo-1546793665-c74683f339c1?w=700"},
+{id:5,name:"بطاطا مقلية",category:"مقبلات",price:3500,description:"بطاطا ذهبية مقرمشة",image:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=700"},
+{id:6,name:"تشيز كيك",category:"حلويات",price:5000,description:"تشيز كيك بطبقة كريمية",image:"https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=700"}
+];
+
+let products=JSON.parse(localStorage.getItem("menu_products")||"null")||initialProducts;
+let cart=JSON.parse(localStorage.getItem("menu_cart")||"{}");
+let orders=JSON.parse(localStorage.getItem("menu_orders")||"[]");
+let settings=JSON.parse(localStorage.getItem("menu_settings")||"{}");
+let activeCategory="الكل";
+
+function save(){
+ localStorage.setItem("menu_products",JSON.stringify(products));
+ localStorage.setItem("menu_cart",JSON.stringify(cart));
+ localStorage.setItem("menu_orders",JSON.stringify(orders));
+ localStorage.setItem("menu_settings",JSON.stringify(settings));
+}
+function money(n){return Number(n||0).toLocaleString("en-US")}
+function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function render(){
+ document.getElementById("heroTitle").textContent=settings.title||"نكهات تستحق التجربة";
+ document.getElementById("heroText").textContent=settings.text||"اكتشف قائمتنا المختارة من الأطباق الطازجة والمحضّرة بعناية.";
+ let categories=["الكل",...new Set(products.map(p=>p.category))];
+ document.getElementById("filters").innerHTML=categories.map(c=>
+ `<button class="chip ${activeCategory===c?"active":""}" onclick="setCategory('${safe(c)}')">${safe(c)}</button>`).join("");
+
+ let shown=activeCategory==="الكل"?products:products.filter(p=>p.category===activeCategory);
+ document.getElementById("products").innerHTML=shown.map(p=>`
+ <article class="product">
+ <img src="${safe(p.image)}" alt="${safe(p.name)}" onerror="this.src='https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=700'">
+ <div class="pbody">
+ <div class="phead"><h3>${safe(p.name)}</h3><span class="price">${money(p.price)} د.ع</span></div>
+ <p class="desc">${safe(p.description)}</p>
+ <button class="add" onclick="addToCart(${p.id})">+ أضف إلى السلة</button>
+ </div></article>`).join("");
+ updateCart();
+}
+function setCategory(c){activeCategory=c;render()}
+function addToCart(id){cart[id]=(cart[id]||0)+1;save();updateCart()}
+function cartItems(){return Object.entries(cart).map(([id,q])=>({product:products.find(p=>p.id==id),qty:q})).filter(x=>x.product)}
+function cartTotal(){return cartItems().reduce((sum,x)=>sum+x.product.price*x.qty,0)}
+function updateCart(){
+ let count=Object.values(cart).reduce((a,b)=>a+b,0);
+ document.getElementById("count").textContent=count;
+ document.getElementById("barCount").textContent=count;
+ document.getElementById("barTotal").textContent=money(cartTotal());
+}
+function openCart(){
+ document.getElementById("cartItems").innerHTML=cartItems().length?cartItems().map(x=>`
+ <div class="cartrow">
+ <div><b>${safe(x.product.name)}</b><div class="muted">${money(x.product.price)} د.ع</div></div>
+ <div class="qty">
+ <button onclick="changeQty(${x.product.id},-1)">−</button>
+ ${x.qty}
+ <button onclick="changeQty(${x.product.id},1)">+</button>
+ </div></div>`).join(""):"<p>السلة فارغة.</p>";
+ document.getElementById("total").textContent=money(cartTotal())+" د.ع";
+ document.getElementById("cartBox").style.display="flex";
+}
+function changeQty(id,delta){
+ cart[id]=(cart[id]||0)+delta;
+ if(cart[id]<=0)delete cart[id];
+ save();openCart();updateCart();
+}
+function closeBox(id){document.getElementById(id).style.display="none"}
+
+function sendOrder(){
+ let items=cartItems();
+ if(!items.length)return alert("السلة فارغة");
+ let name=document.getElementById("customerName").value.trim();
+ let phone=document.getElementById("customerPhone").value.trim();
+ let address=document.getElementById("customerAddress").value.trim();
+ if(!name||!phone||!address)return alert("يرجى ملء الاسم والهاتف والعنوان");
+ let order={
+ id:Date.now(),name,phone,address,
+ payment:document.getElementById("payment").value,
+ notes:document.getElementById("notes").value,
+ items:items.map(x=>({name:x.product.name,qty:x.qty,price:x.product.price})),
+ total:cartTotal(),status:"جديد",date:new Date().toLocaleString("ar-IQ")
+ };
+ orders.unshift(order);cart={};save();updateCart();closeBox("cartBox");
+ alert("تم تسجيل الطلب في النسخة التجريبية. لا يصل الطلب إلى المطعم إلا بعد ربط قاعدة بيانات.");
+}
+
+function openAdmin(){document.getElementById("adminBox").style.display="flex"}
+function login(){
+ if(document.getElementById("pin").value!=="1234")return alert("رمز الدخول غير صحيح");
+ document.getElementById("login").style.display="none";
+ document.getElementById("dashboard").style.display="block";
+ renderAdmin();
+}
+function showTab(tab,button){
+ document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+ ["orders","manage","settings"].forEach(id=>document.getElementById(id).style.display=id===tab?"block":"none");
+}
+function renderAdmin(){
+ document.getElementById("orders").innerHTML=orders.length?orders.map(o=>`
+ <div class="adminrow">
+ <b>طلب ${o.id.toString().slice(-6)} — ${safe(o.name)}</b>
+ <p class="muted">${safe(o.phone)} | ${safe(o.address)} | ${safe(o.date)}</p>
+ <p>${o.items.map(i=>safe(i.name)+" × "+i.qty).join("، ")}</p>
+ <b>${money(o.total)} د.ع</b>
+ <p class="muted">الدفع: ${safe(o.payment)}</p>
+ <label>حالة الطلب:</label>
+ <select onchange="changeStatus(${o.id},this.value)">
+ ${["جديد","قيد التحضير","جاهز","تم التسليم","ملغي"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}
+ </select>
+ </div>`).join(""):"<p>لا توجد طلبات حالياً.</p>";
+
+ document.getElementById("productManagement").innerHTML=products.map(p=>`
+ <div class="adminrow">${safe(p.name)} — ${money(p.price)} د.ع
+ <button class="close" onclick="deleteProduct(${p.id})">حذف</button></div>`).join("");
+
+ document.getElementById("editTitle").value=settings.title||"نكهات تستحق التجربة";
+ document.getElementById("editText").value=settings.text||"اكتشف قائمتنا المختارة من الأطباق الطازجة والمحضّرة بعناية.";
+}
+function changeStatus(id,status){orders=orders.map(o=>o.id===id?{...o,status}:o);save();renderAdmin()}
+function addProduct(){
+ let name=document.getElementById("newName").value.trim();
+ let category=document.getElementById("newCategory").value.trim();
+ let price=Number(document.getElementById("newPrice").value);
+ if(!name||!category||!price)return alert("أكملي الاسم والقسم والسعر");
+ products.push({id:Date.now(),name,category,price,image:document.getElementById("newImage").value||"https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=700",description:document.getElementById("newDescription").value});
+ save();render();renderAdmin();alert("تمت إضافة المنتج");
+}
+function deleteProduct(id){
+ if(!confirm("هل تريدين حذف المنتج؟"))return;
+ products=products.filter(p=>p.id!==id);delete cart[id];save();render();renderAdmin();
+}
+function saveSettings(){
+ settings.title=document.getElementById("editTitle").value;
+ settings.text=document.getElementById("editText").value;
+ save();render();alert("تم حفظ الإعدادات");
+}
+document.getElementById("year")?.textContent;
+render();
+</script>
+</body>
+</html>
+
