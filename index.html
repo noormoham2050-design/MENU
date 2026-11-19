@@ -121,6 +121,16 @@ footer{text-align:center;color:#888;padding:35px 15px 90px}
   </div>
 
   <div id="login">
+  <div class="field">
+    <label>البريد الإلكتروني</label>
+    <input id="loginEmail" type="email" placeholder="Email">
+  </div>
+  <div class="field">
+    <label>كلمة المرور</label>
+    <input id="loginPassword" type="password" placeholder="Password">
+  </div>
+  <button class="gold" onclick="login()">دخول</button>
+  </div>
     <p class="muted">رمز الدخول التجريبي: 1234</p>
     <div class="field"><label>رمز الإدارة</label><input id="pin" type="password"></div>
     <button class="gold" onclick="login()">دخول</button>
@@ -299,12 +309,39 @@ function sendOrder(){
 }
 
 function openAdmin(){document.getElementById("adminBox").style.display="flex"}
-function login(){
- if(document.getElementById("pin").value!=="1234")return alert("رمز الدخول غير صحيح");
- document.getElementById("login").style.display="none";
- document.getElementById("dashboard").style.display="block";
- renderAdmin();
-}
+async function login(){
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+
+  if(!email || !password){
+    return alert("أدخلي البريد الإلكتروني وكلمة المرور");
+  }
+
+  const {data,error} = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    return alert("بيانات الدخول غير صحيحة");
+  }
+
+  const {data:member,error:memberError} = await supabaseClient
+    .from("restaurant_members")
+    .select("role")
+    .eq("restaurant_id",RESTAURANT_ID)
+    .eq("user_id",data.user.id)
+    .single();
+
+  if(memberError || !member || !["owner","manager"].includes(member.role)){
+    await supabaseClient.auth.signOut();
+    return alert("ليس لديك صلاحية إدارة هذا المطعم");
+  }
+
+  document.getElementById("login").style.display="none";
+  document.getElementById("dashboard").style.display="block";
+  renderAdmin();
+  }
 function showTab(tab,button){
  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
  button.classList.add("active");
