@@ -162,6 +162,79 @@ footer{text-align:center;color:#888;padding:35px 15px 90px}
   }
 }
 
+.adminrow {
+  background: #faf9f6;
+  border: 1px solid #eee;
+  border-radius: 13px;
+  padding: 16px;
+  margin: 12px 0;
+  line-height: 1.9;
+}
+
+.adminrow h3 {
+  margin-top: 0;
+}
+
+.adminrow select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  margin-top: 8px;
+}
+
+.admin-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 12px;
+}
+
+.admin-product-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #faf9f6;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.admin-product-card img {
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 9px;
+}
+
+.admin-product-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.admin-product-info span {
+  color: #888;
+  font-size: 12px;
+}
+
+.admin-product-info strong {
+  color: #9b7439;
+}
+
+.delete-product {
+  background: #f8e8e5;
+  color: #a52b20;
+  padding: 9px;
+}
+
+.empty-admin {
+  text-align: center;
+  padding: 25px;
+  color: #888;
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -486,27 +559,64 @@ function showTab(tab,button){
  button.classList.add("active");
  ["orders","manage","settings"].forEach(id=>document.getElementById(id).style.display=id===tab?"block":"none");
 }
+
 function renderAdmin(){
- document.getElementById("orders").innerHTML=orders.length?orders.map(o=>`
- <div class="adminrow">
- <b>طلب ${o.id.toString().slice(-6)} — ${safe(o.name)}</b>
- <p class="muted">${safe(o.phone)} | ${safe(o.address)} | ${safe(o.date)}</p>
- <p>${o.items.map(i=>safe(i.name)+" × "+i.qty).join("، ")}</p>
- <b>${money(o.total)} د.ع</b>
- <p class="muted">الدفع: ${safe(o.payment)}</p>
- <label>حالة الطلب:</label>
- <select onchange="changeStatus(${o.id},this.value)">
- ${["جديد","قيد التحضير","جاهز","تم التسليم","ملغي"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}
- </select>
- </div>`).join(""):"<p>لا توجد طلبات حالياً.</p>";
 
- document.getElementById("productManagement").innerHTML=products.map(p=>`
- <div class="adminrow">${safe(p.name)} — ${money(p.price)} د.ع
- <button class="close" onclick="deleteProduct(${p.id})">حذف</button></div>`).join("");
+  // عرض الطلبات
+  document.getElementById("orders").innerHTML = orders.length
+    ? orders.map(o => `
+      <div class="adminrow">
+        <h3>طلب رقم ${o.id.toString().slice(-6)}</h3>
+        <p><b>الاسم:</b> ${safe(o.name)}</p>
+        <p><b>الهاتف:</b> ${safe(o.phone)}</p>
+        <p><b>العنوان:</b> ${safe(o.address)}</p>
+        <p><b>التاريخ:</b> ${safe(o.date)}</p>
+        <p><b>المنتجات:</b> ${o.items.map(i =>
+          safe(i.name) + " × " + i.qty
+        ).join("، ")}</p>
+        <p><b>المجموع:</b> ${money(o.total)} د.ع</p>
+        <p><b>طريقة الدفع:</b> ${safe(o.payment)}</p>
 
- document.getElementById("editTitle").value=settings.title||"نكهات تستحق التجربة";
- document.getElementById("editText").value=settings.text||"اكتشف قائمتنا المختارة من الأطباق الطازجة والمحضّرة بعناية.";
+        <label>حالة الطلب</label>
+        <select onchange="changeStatus(${JSON.stringify(o.id)},this.value)">
+          ${["جديد","قيد التحضير","جاهز","تم التسليم","ملغي"].map(s =>
+            `<option ${o.status===s?"selected":""}>${s}</option>`
+          ).join("")}
+        </select>
+      </div>
+    `).join("")
+    : "<p class='empty-admin'>لا توجد طلبات حالياً.</p>";
+
+  // عرض المنتجات
+  document.getElementById("productManagement").innerHTML = `
+    <h3>المنتجات الحالية (${products.length})</h3>
+    <div class="admin-products">
+      ${products.map(p => `
+        <div class="admin-product-card">
+          <img src="${safe(p.image)}"
+               onerror="this.style.display='none'">
+          <div class="admin-product-info">
+            <b>${safe(p.name)}</b>
+            <span>${safe(p.category)}</span>
+            <strong>${money(p.price)} د.ع</strong>
+          </div>
+          <button class="delete-product"
+            onclick="deleteProduct(${JSON.stringify(p.id)})">
+            حذف
+          </button>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  // الإعدادات
+  document.getElementById("editTitle").value =
+    settings.title || "نكهات تستحق التجربة";
+
+  document.getElementById("editText").value =
+    settings.text || "اكتشف قائمتنا المختارة من الأطباق الطازجة والمحضّرة بعناية.";
 }
+
 function changeStatus(id,status){orders=orders.map(o=>o.id===id?{...o,status}:o);save();renderAdmin()}
 function addProduct(){
  let name=document.getElementById("newName").value.trim();
