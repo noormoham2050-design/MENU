@@ -618,18 +618,191 @@ function renderAdmin(){
 }
 
 function changeStatus(id,status){orders=orders.map(o=>o.id===id?{...o,status}:o);save();renderAdmin()}
-function addProduct(){
- let name=document.getElementById("newName").value.trim();
- let category=document.getElementById("newCategory").value.trim();
- let price=Number(document.getElementById("newPrice").value);
- if(!name||!category||!price)return alert("أكملي الاسم والقسم والسعر");
- products.push({id:Date.now(),name,category,price,image:document.getElementById("newImage").value||"https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=700",description:document.getElementById("newDescription").value});
- save();render();renderAdmin();alert("تمت إضافة المنتج");
+
+async function addProduct(){
+
+  const name = document.getElementById("newName").value.trim();
+  const category = document.getElementById("newCategory").value.trim();
+  const price = Number(document.getElementById("newPrice").value);
+  const image = document.getElementById("newImage").value.trim() ||
+    "https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=700";
+  const description = document.getElementById("newDescription").value.trim();
+
+  if(!name || !category || !price || price <= 0){
+    return alert("أكملي الاسم والقسم والسعر بشكل صحيح");
+  }
+
+  // البحث عن القسم
+  let {data:cat,error:catError} = await supabaseClient
+    .from("categories")
+    .select("id")
+    .eq("restaurant_id",RESTAURANT_ID)
+    .eq("name",category)
+    .maybeSingle();
+
+  if(catError){
+    return alert("تعذر البحث عن القسم: " + catError.message);
+  }
+
+  // إنشاء القسم إذا لم يكن موجوداً
+  if(!cat){
+    const result = await supabaseClient
+      .from("categories")
+      .insert({
+        restaurant_id:RESTAURANT_ID,
+        name:category
+      })
+      .select("id")
+      .single();
+
+    if(result.error){
+      return alert("تعذر إنشاء القسم: " + result.error.message);
+    }
+
+    cat = result.data;
+  }
+
+  // إضافة المنتج إلى قاعدة البيانات
+  const {error} = await supabaseClient
+    .from("products")
+    .insert({
+      restaurant_id:RESTAURANT_ID,
+      category_id:cat.id,
+      name:name,
+      description:description,
+      price:price,
+      image_url:image,
+      is_available:true
+    });
+
+  if(error){
+    return alert("فشلت إضافة المنتج: " + error.message);
+  }
+
+  await loadProducts();
+  renderAdmin();
+
+  ["newName","newCategory","newPrice","newImage","newDescription"]
+    .forEach(id => document.getElementById(id).value = "");
+
+  alert("تمت إضافة المنتج بنجاح");
 }
-function deleteProduct(id){
- if(!confirm("هل تريدين حذف المنتج؟"))return;
- products=products.filter(p=>p.id!==id);delete cart[id];save();render();renderAdmin();
+
+
+async function deleteProduct(id){
+
+  if(!confirm("هل تريدين حذف المنتج؟")) return;
+
+  const {error} = await supabaseClient
+    .from("products")
+    .delete()
+    .eq("id",id)
+    .eq("restaurant_id",RESTAURANT_ID);
+
+  if(error){
+    return alert("فشل حذف المنتج: " + error.message);
+  }
+
+  delete cart[id];
+
+  await loadProducts();
+  renderAdmin();
+
+  alert("تم حذف المنتج بنجاح");
 }
+
+async function addProduct(){
+
+  const name = document.getElementById("newName").value.trim();
+  const category = document.getElementById("newCategory").value.trim();
+  const price = Number(document.getElementById("newPrice").value);
+  const image = document.getElementById("newImage").value.trim() ||
+    "https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=700";
+  const description = document.getElementById("newDescription").value.trim();
+
+  if(!name || !category || !price || price <= 0){
+    return alert("أكملي الاسم والقسم والسعر بشكل صحيح");
+  }
+
+  // البحث عن القسم
+  let {data:cat,error:catError} = await supabaseClient
+    .from("categories")
+    .select("id")
+    .eq("restaurant_id",RESTAURANT_ID)
+    .eq("name",category)
+    .maybeSingle();
+
+  if(catError){
+    return alert("تعذر البحث عن القسم: " + catError.message);
+  }
+
+  // إنشاء القسم إذا لم يكن موجوداً
+  if(!cat){
+    const result = await supabaseClient
+      .from("categories")
+      .insert({
+        restaurant_id:RESTAURANT_ID,
+        name:category
+      })
+      .select("id")
+      .single();
+
+    if(result.error){
+      return alert("تعذر إنشاء القسم: " + result.error.message);
+    }
+
+    cat = result.data;
+  }
+
+  // إضافة المنتج إلى قاعدة البيانات
+  const {error} = await supabaseClient
+    .from("products")
+    .insert({
+      restaurant_id:RESTAURANT_ID,
+      category_id:cat.id,
+      name:name,
+      description:description,
+      price:price,
+      image_url:image,
+      is_available:true
+    });
+
+  if(error){
+    return alert("فشلت إضافة المنتج: " + error.message);
+  }
+
+  await loadProducts();
+  renderAdmin();
+
+  ["newName","newCategory","newPrice","newImage","newDescription"]
+    .forEach(id => document.getElementById(id).value = "");
+
+  alert("تمت إضافة المنتج بنجاح");
+}
+
+
+async function deleteProduct(id){
+
+  if(!confirm("هل تريدين حذف المنتج؟")) return;
+
+  const {error} = await supabaseClient
+    .from("products")
+    .delete()
+    .eq("id",id)
+    .eq("restaurant_id",RESTAURANT_ID);
+
+  if(error){
+    return alert("فشل حذف المنتج: " + error.message);
+  }
+
+  delete cart[id];
+
+  await loadProducts();
+  renderAdmin();
+
+  alert("تم حذف المنتج بنجاح");
+}
+
 function saveSettings(){
  settings.title=document.getElementById("editTitle").value;
  settings.text=document.getElementById("editText").value;
