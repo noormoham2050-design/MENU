@@ -49,6 +49,119 @@ main{max-width:1100px;margin:auto;padding:25px 16px}
 .muted{font-size:12px;color:#777;line-height:1.7}
 footer{text-align:center;color:#888;padding:35px 15px 90px}
 @media(max-width:500px){.hero h1{font-size:28px}.logo{font-size:23px}header{padding:12px}}
+
+/* MENU ADMIN DASHBOARD */
+#adminBox .modal {
+  direction: rtl;
+  text-align: right;
+  width: min(95%, 850px);
+  max-width: 850px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 22px;
+  border-radius: 18px;
+  background: #fff;
+}
+
+#adminBox .modalhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+#adminBox .modalhead h2 {
+  color: #171717;
+  margin: 0;
+  font-size: 23px;
+}
+
+#adminBox h3 {
+  color: #9b7439;
+  margin: 20px 0 14px;
+}
+
+#adminBox .tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin: 20px 0;
+}
+
+#adminBox .tab {
+  background: #f3f0e9;
+  color: #333;
+  padding: 13px 8px;
+  border-radius: 10px;
+}
+
+#adminBox .tab.active {
+  background: #171717;
+  color: #d6b477;
+}
+
+#adminBox .field {
+  margin-bottom: 15px;
+}
+
+#adminBox .field label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: bold;
+  color: #444;
+}
+
+#adminBox input,
+#adminBox textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  font-family: Tahoma, Arial;
+  text-align: right;
+  direction: rtl;
+  background: #fafafa;
+}
+
+#adminBox input:focus,
+#adminBox textarea:focus {
+  outline: none;
+  border-color: #b58b48;
+}
+
+#adminBox .gold {
+  min-width: 120px;
+  padding: 13px 20px;
+}
+
+#adminBox .muted {
+  color: #888;
+  line-height: 1.8;
+}
+
+@media (max-width: 600px) {
+  #adminBox .modal {
+    width: 96%;
+    padding: 15px;
+    max-height: 92vh;
+  }
+
+  #adminBox .modalhead h2 {
+    font-size: 19px;
+  }
+
+  #adminBox .tabs {
+    gap: 5px;
+  }
+
+  #adminBox .tab {
+    font-size: 12px;
+    padding: 12px 4px;
+  }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
