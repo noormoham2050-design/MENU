@@ -112,60 +112,86 @@ footer{text-align:center;color:#888;padding:35px 15px 90px}
 </div>
 </div>
 
+
 <!-- ADMIN -->
 <div class="overlay" id="adminBox">
-<div class="modal">
-  <div class="modalhead">
-    <h2>لوحة الإدارة</h2>
-    <button class="close" onclick="closeBox('adminBox')">✕</button>
-  </div>
+  <div class="modal" dir="rtl">
 
-  <div id="login">
-  <div class="field">
-    <label>البريد الإلكتروني</label>
-    <input id="loginEmail" type="email" placeholder="Email">
-  </div>
-  <div class="field">
-    <label>كلمة المرور</label>
-    <input id="loginPassword" type="password" placeholder="Password">
-  </div>
-  <button class="gold" onclick="login()">دخول</button>
-  </div>
-    <p class="muted">رمز الدخول التجريبي: 1234</p>
-    <div class="field"><label>رمز الإدارة</label><input id="pin" type="password"></div>
-    <button class="gold" onclick="login()">دخول</button>
-  </div>
-
-  <div id="dashboard" style="display:none">
-    <p class="muted">لوحة تجريبية: البيانات محفوظة على هذا المتصفح فقط، وليست مشتركة بين الأجهزة.</p>
-    <div class="tabs">
-      <button class="tab active" onclick="showTab('orders',this)">الطلبات</button>
-      <button class="tab" onclick="showTab('manage',this)">المنتجات</button>
-      <button class="tab" onclick="showTab('settings',this)">الإعدادات</button>
+    <div class="modalhead">
+      <h2>لوحة الإدارة</h2>
+      <button class="close" onclick="closeBox('adminBox')">✕</button>
     </div>
 
-    <div id="orders"></div>
-
-    <div id="manage" style="display:none">
-      <h3>إضافة منتج</h3>
-      <div class="field"><label>اسم المنتج</label><input id="newName"></div>
-      <div class="field"><label>القسم</label><input id="newCategory" placeholder="مثلاً: برغر"></div>
-      <div class="field"><label>السعر بالدينار</label><input id="newPrice" type="number"></div>
-      <div class="field"><label>رابط الصورة</label><input id="newImage"></div>
-      <div class="field"><label>الوصف</label><input id="newDescription"></div>
-      <button class="gold" onclick="addProduct()">إضافة المنتج</button>
-      <div id="productManagement"></div>
+    <!-- تسجيل الدخول -->
+    <div id="login">
+      <h3>تسجيل دخول الإدارة</h3>
+      <div class="field">
+        <label>البريد الإلكتروني</label>
+        <input id="loginEmail" type="email" placeholder="البريد الإلكتروني">
+      </div>
+      <div class="field">
+        <label>كلمة المرور</label>
+        <input id="loginPassword" type="password" placeholder="كلمة المرور">
+      </div>
+      <button class="gold" onclick="login()">دخول</button>
     </div>
 
-    <div id="settings" style="display:none">
-      <h3>إعدادات المطعم</h3>
-      <div class="field"><label>عنوان الصفحة</label><input id="editTitle"></div>
-      <div class="field"><label>الوصف</label><textarea id="editText"></textarea></div>
-      <button class="gold" onclick="saveSettings()">حفظ</button>
+    <!-- لوحة التحكم -->
+    <div id="dashboard" style="display:none">
+
+      <p class="muted">مرحباً بك في إدارة المطعم</p>
+
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('orders',this)">الطلبات</button>
+        <button class="tab" onclick="showTab('manage',this)">المنتجات</button>
+        <button class="tab" onclick="showTab('settings',this)">الإعدادات</button>
+      </div>
+
+      <div id="orders"></div>
+
+      <div id="manage" style="display:none">
+        <h3>إدارة المنتجات</h3>
+        <div class="field">
+          <label>اسم المنتج</label>
+          <input id="newName">
+        </div>
+        <div class="field">
+          <label>القسم</label>
+          <input id="newCategory" placeholder="مثلاً: برغر">
+        </div>
+        <div class="field">
+          <label>السعر بالدينار</label>
+          <input id="newPrice" type="number">
+        </div>
+        <div class="field">
+          <label>رابط الصورة</label>
+          <input id="newImage">
+        </div>
+        <div class="field">
+          <label>الوصف</label>
+          <input id="newDescription">
+        </div>
+        <button class="gold" onclick="addProduct()">إضافة المنتج</button>
+        <div id="productManagement"></div>
+      </div>
+
+      <div id="settings" style="display:none">
+        <h3>إعدادات المطعم</h3>
+        <div class="field">
+          <label>عنوان الصفحة</label>
+          <input id="editTitle">
+        </div>
+        <div class="field">
+          <label>الوصف</label>
+          <textarea id="editText"></textarea>
+        </div>
+        <button class="gold" onclick="saveSettings()">حفظ</button>
+      </div>
+
     </div>
   </div>
 </div>
-</div>
+
 
 <script>
   
